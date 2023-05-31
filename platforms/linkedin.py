@@ -49,7 +49,6 @@ class LinkedinScraper:
 
             if job_data['company_name'] in blacklist: continue
             job_data['url'] = await (await job.query_selector('a')).get_attribute('href')
-            print(job_data['url'])
 
             job_infos = await self._fetch_job_infos(job_data['url'])
             job_data.update(job_infos)
