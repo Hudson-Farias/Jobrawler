@@ -12,8 +12,8 @@ load_dotenv()
 async def main():
     async with async_playwright() as p:
         async with AsyncClient() as client:
-            # browser = await p.chromium.launch(headless = True)
-            browser = await p.chromium.launch(headless = False)
+            browser = await p.chromium.launch(headless = True)
+            # browser = await p.chromium.launch(headless = False)
             webhook = Webhook(client, getenv('WEBHOOK'))
             page = await browser.new_page()
 
