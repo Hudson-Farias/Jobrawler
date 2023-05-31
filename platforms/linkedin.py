@@ -4,6 +4,8 @@ from bs4 import BeautifulSoup
 from asyncio import sleep
 from re import findall
 
+from utils.webhook import Webhook
+
 blacklist = ['GeekHunter', 'Netvagas']
 
 class LinkedinScraper:
@@ -11,9 +13,10 @@ class LinkedinScraper:
     jobs = []
     is_remote = True
 
-    def __init__(self, page: Page, client: AsyncClient):
+    def __init__(self, page: Page, client: AsyncClient, webhook: Webhook):
         self.page = page
         self.client = client
+        self.webhook = webhook
         self.scroll_position = 0
 
     async def run(self, search: str, *, is_remote: bool = True):
@@ -22,6 +25,8 @@ class LinkedinScraper:
 
         await self._search()        
         await self._get_jobs()
+
+        if self.jobs: await self.webhook.embed(self.jobs)
 
     async def _search(self):
         url = f'https://www.linkedin.com/jobs/search/?location=Brasil&geoId=106057199&keywords={self.search}'
@@ -43,7 +48,6 @@ class LinkedinScraper:
             job_data['company_name'] = await self.__get_selector_inner_text('.base-search-card__subtitle', job)
 
             if job_data['company_name'] in blacklist: continue
-            print(job_data['company_name'])
             job_data['url'] = await (await job.query_selector('a')).get_attribute('href')
 
             job_infos = await self._fetch_job_infos(job_data['url'])
@@ -51,7 +55,6 @@ class LinkedinScraper:
 
             job_string = job_data['title']  + '\n' + job_data['description']
             requirements = findall(r'react\.?js', job_string.lower())
-            print(requirements)
 
             if requirements: self.jobs.append(job_data)        
 
