@@ -25,9 +25,3 @@ class Webhook:
                 await client.post(self.url, json = data)
                 
                 x += 10
-            
-        # if self.embeds:
-        #     data = {'embeds': self.embeds}
-            
-        #     await self.client.post(self.webhookURL, json = data)
-        #     self.embeds = []  
