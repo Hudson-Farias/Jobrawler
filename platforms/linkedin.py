@@ -2,12 +2,14 @@ from playwright.async_api._generated import Page, ElementHandle
 from httpx import AsyncClient
 from bs4 import BeautifulSoup
 from asyncio import sleep
-from re import findall
+from re import findall, escape, IGNORECASE
 
 from models.discord.embed import WebhookEmbed, EmbedFooter
 from discord.webhook import Webhook
+from utils.json import json_load
 
 blacklist = ['GeekHunter', 'Netvagas']
+strings = json_load()['linkedin']
 
 class LinkedinScraper:
     embed = WebhookEmbed()
@@ -49,7 +51,12 @@ class LinkedinScraper:
             await self.__fetch_job_infos(self.embed.url)
 
             text = self.embed.title  + '\n' + self.embed.description
-            requirements = findall(r'react\.?js', text.lower())
+            pattern = '|'.join(escape(s) for s in strings)
+            requirements = findall(pattern, text, IGNORECASE)
+            
+            self.embed.description = '' ## disable desc
+            
+            print(requirements)
 
             if requirements: self.webhook.add_embed(self.embed)        
 

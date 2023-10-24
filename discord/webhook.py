@@ -14,6 +14,7 @@ class Webhook:
 
     async def send(self, client: AsyncClient):
         if self.webhook.embeds:
+            print(len(self.webhook.embeds))
             data = self.webhook.dict()
             x = 0
 
@@ -22,6 +23,6 @@ class Webhook:
                 embeds = [embed.dict() for embed in embeds]
                 
                 data['embeds'] = embeds
-                await client.post(self.url, json = data)
-                
+                response = await client.post(self.url, json = data)
+            
                 x += 10
