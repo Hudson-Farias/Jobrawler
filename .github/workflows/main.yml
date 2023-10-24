@@ -6,7 +6,9 @@ on:
     - cron: "0 7 * * *"
 
 env:
-    WEBHOOK: ${{ secrets.WEBHOOK }}
+    WEBHOOK_REMOTE: ${{ secrets.WEBHOOK_REMOTE }}
+    WEBHOOK_ONSITE: ${{ secrets.WEBHOOK_ONSITE }}
+    HEADLESS: ${{ secrets.HEADLESS }}
 
 jobs:
   build:
