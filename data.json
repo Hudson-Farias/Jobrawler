@@ -1,3 +1,47 @@
 {
-    "linkedin": ["react", "python", "typescript", "next", "fastapi", "selenium", "webscraping", "playwright"]
+    "linkedin": {
+        "crawler_file": "platforms.linkedin",
+        "regex": [
+            "react", 
+            "python", 
+            "typescript", 
+            "next", 
+            "fastapi", 
+            "selenium", 
+            "webscraping", 
+            "playwright"
+        ],
+        "queries": [
+            "Programador",
+            "Desenvolvedor",
+            "Backend",
+            "Frontend",
+            "Fullstack",
+            "React.js",
+            "Python"
+        ]
+    },
+    
+    "catho": {
+        "crawler_file": null,
+        "regex": [
+            "react", 
+            "python", 
+            "typescript", 
+            "next", 
+            "fastapi", 
+            "selenium", 
+            "webscraping", 
+            "playwright"
+        ],
+        "queries": [
+            "Programador",
+            "Desenvolvedor",
+            "Backend",
+            "Frontend",
+            "Fullstack",
+            "React.js",
+            "Python"
+        ]
+    }
 }

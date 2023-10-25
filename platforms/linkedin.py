@@ -9,15 +9,16 @@ from discord.webhook import Webhook
 from utils.json import json_load
 
 blacklist = ['GeekHunter', 'Netvagas']
-strings = json_load()['linkedin']
+urls = []
 
-class LinkedinScraper:
+class Crawler:
     embed = WebhookEmbed()
 
-    def __init__(self, page: Page, client: AsyncClient, webhook: Webhook):
+    def __init__(self, page: Page, client: AsyncClient, webhook: Webhook, strings: []):
         self.page = page
         self.client = client
         self.webhook = webhook
+        self.strings = strings
         self.scroll_position = 0
 
     async def run(self, query: str, is_remote: bool):
@@ -45,16 +46,19 @@ class LinkedinScraper:
             company_name = await self.__get_selector_inner_text('.base-search-card__subtitle', job)
             if company_name in blacklist: continue
             
+            url  = await (await job.query_selector('a')).get_attribute('href')
+            if url in urls: continue
+            
             self.embed.footer = EmbedFooter(text = company_name)
-            self.embed.url = await (await job.query_selector('a')).get_attribute('href')
+            self.embed.url = url
 
             await self.__fetch_job_infos(self.embed.url)
 
-            text = self.embed.title  + '\n' + self.embed.description
-            pattern = '|'.join(escape(s) for s in strings)
+            text = self.embed.title  + '\n' + self.embed.description[:100]
+            pattern = '|'.join(escape(s) for s in self.strings)
             requirements = findall(pattern, text, IGNORECASE)
             
-            self.embed.description = '' ## disable desc
+            # self.embed.description = '' ## disable desc
 
             if requirements: self.webhook.add_embed(self.embed)        
 

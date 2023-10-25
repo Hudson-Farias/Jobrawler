@@ -3,30 +3,29 @@ from httpx import AsyncClient
 from asyncio import run, TaskGroup
 from dotenv import load_dotenv
 from os import getenv
+from importlib import import_module
 
 from discord.webhook import Webhook
-from platforms.linkedin import LinkedinScraper
+from utils.json import json_load
 
 load_dotenv()
 
 webhooks = {}
-queries = [
-    'Programador',
-    'Desenvolvedor',
-    'Backend',
-    'Frontend',
-    'Fullstack',
-    # 'React.js',
-    # 'Python',
-]
+
+plataforms: dict = json_load()
 
 async def crawlling(client):
-    for query in queries:
-        async with TaskGroup() as tg:
-            for webhook, page, is_remote in webhooks.values():
-                crawler = LinkedinScraper(page, client, webhook)
-                tg.create_task(crawler.run(query, is_remote = is_remote))
-            
+    for plataform in plataforms.values():
+        if plataform['crawler_file']: 
+            print(plataform['crawler_file'])
+        
+            for query in plataform['queries']:
+                async with TaskGroup() as tg:
+                    for webhook, page, is_remote in webhooks.values():
+                        module = import_module(plataform['crawler_file'])
+                        crawler = module.Crawler(page, client, webhook, plataform['regex'])
+                        tg.create_task(crawler.run(query, is_remote = is_remote))
+                
     async with TaskGroup() as tg:
         for webhook, _, __ in webhooks.values():
             tg.create_task(webhook.send(client))

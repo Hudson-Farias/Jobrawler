@@ -22,7 +22,12 @@ class Webhook:
                 embeds = self.webhook.embeds[x:x + 10]
                 embeds = [embed.dict() for embed in embeds]
                 
+                print(len(self.webhook.embeds))
                 data['embeds'] = embeds
                 response = await client.post(self.url, json = data)
+                
+                print(response.json())
             
                 x += 10
+                
+        print('='*30)
