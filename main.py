@@ -10,12 +10,22 @@ from platforms.linkedin import LinkedinScraper
 load_dotenv()
 
 webhooks = {}
+queries = [
+    'Programador',
+    'Desenvolvedor',
+    'Backend',
+    'Frontend',
+    'Fullstack',
+    # 'React.js',
+    # 'Python',
+]
 
 async def crawlling(client):
-    async with TaskGroup() as tg:
-        for webhook, page, is_remote in webhooks.values():
-            crawler = LinkedinScraper(page, client, webhook)
-            tg.create_task(crawler.run('React.js', is_remote = is_remote))
+    for query in queries:
+        async with TaskGroup() as tg:
+            for webhook, page, is_remote in webhooks.values():
+                crawler = LinkedinScraper(page, client, webhook)
+                tg.create_task(crawler.run(query, is_remote = is_remote))
             
     async with TaskGroup() as tg:
         for webhook, _, __ in webhooks.values():

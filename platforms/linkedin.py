@@ -55,8 +55,6 @@ class LinkedinScraper:
             requirements = findall(pattern, text, IGNORECASE)
             
             self.embed.description = '' ## disable desc
-            
-            print(requirements)
 
             if requirements: self.webhook.add_embed(self.embed)        
 
