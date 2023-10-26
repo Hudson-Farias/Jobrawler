@@ -37,7 +37,7 @@ async def main():
             print('Iniciado')
             
             webhooks['remote'] = Webhook(getenv('WEBHOOK_REMOTE')), (await browser.new_page()), True
-            # webhooks['onsite'] = Webhook(getenv('WEBHOOK_ONSITE')), (await browser.new_page()), False
+            webhooks['onsite'] = Webhook(getenv('WEBHOOK_ONSITE')), (await browser.new_page()), False
             
             await crawlling(client)
         
