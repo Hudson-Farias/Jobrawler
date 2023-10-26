@@ -46,6 +46,7 @@ class Crawler:
             
             url  = await (await job.query_selector('a')).get_attribute('href')
             if url in urls: continue
+            urls.append(url)
             
             self.embed = WebhookEmbed()
             self.embed.footer = EmbedFooter(text = company_name)

@@ -25,7 +25,10 @@ class Webhook:
                 data['embeds'] = embeds
                 response = await client.post(self.url, json = data)
                  
-                try: print(response.json())
+                if response.status_code != 204: print(response.status_code)
+                try: 
+                    print(response.status_code)
+                    print(type(response.status_code))
                 except Exception as e: print(e)
                 
                 x += 10
