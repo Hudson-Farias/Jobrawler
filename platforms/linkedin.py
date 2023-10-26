@@ -6,14 +6,11 @@ from re import findall, escape, IGNORECASE
 
 from models.discord.embed import WebhookEmbed, EmbedFooter
 from discord.webhook import Webhook
-from utils.json import json_load
 
 blacklist = ['GeekHunter', 'Netvagas']
 urls = []
 
 class Crawler:
-    embed = WebhookEmbed()
-
     def __init__(self, page: Page, client: AsyncClient, webhook: Webhook, strings: []):
         self.page = page
         self.client = client
@@ -41,6 +38,7 @@ class Crawler:
         jobs = await self.page.query_selector_all('.jobs-search__results-list li')
 
         for i, job in enumerate(jobs):
+            
             if i == 5: break
             
             company_name = await self.__get_selector_inner_text('.base-search-card__subtitle', job)
@@ -49,6 +47,7 @@ class Crawler:
             url  = await (await job.query_selector('a')).get_attribute('href')
             if url in urls: continue
             
+            self.embed = WebhookEmbed()
             self.embed.footer = EmbedFooter(text = company_name)
             self.embed.url = url
 
@@ -58,7 +57,7 @@ class Crawler:
             pattern = '|'.join(escape(s) for s in self.strings)
             requirements = findall(pattern, text, IGNORECASE)
             
-            # self.embed.description = '' ## disable desc
+            self.embed.description = '' ## disable desc
 
             if requirements: self.webhook.add_embed(self.embed)        
 
